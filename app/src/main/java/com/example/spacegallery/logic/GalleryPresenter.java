@@ -6,7 +6,6 @@ import com.example.spacegallery.ui.GalleryFragment;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
-import java.util.Optional;
 
 public class GalleryPresenter {
     private WeakReference<GalleryFragment> galleryFragment;
@@ -20,12 +19,16 @@ public class GalleryPresenter {
     public GalleryFragment getView() {
         return galleryFragment.get();
     }
+
+    /*
+        Parse the data.json file
+     */
     public void parseJsonFile(String fileName) {
         OnImageLoadedListener callback = new OnImageLoadedListener() {
 
             @Override
             public void onImageLoaded(List<ImageData> imageDataList) {
-
+                galleryFragment.get().updateAdapterData(imageDataList);
             }
         };
         String jsonFormat = galleryModel.loadJsonData(fileName);

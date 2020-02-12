@@ -14,10 +14,13 @@ public class GalleryModel {
         this.galleryPresenter = presenter;
     }
 
+    /*
+        Read the data.json file
+     */
     public String loadJsonData(String jsonFileName) {
         String jsonData = null;
         try {
-            InputStream in = galleryPresenter.getView().getActivity().getAssets().open(jsonFileName);
+            InputStream in = galleryPresenter.getView().getContext().getAssets().open(jsonFileName);
             int length = in.available();
             byte[] data = new byte[length];
             in.read(data);
@@ -29,6 +32,9 @@ public class GalleryModel {
         return jsonData;
     }
 
+    /*
+        Convert json format to Java object
+     */
     public void processJsonToJava(String jsonFormat, OnImageLoadedListener listener) {
         GalleryLoader asyncTask = new GalleryLoader(listener);
         asyncTask.execute(jsonFormat);

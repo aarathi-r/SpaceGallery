@@ -8,10 +8,17 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.spacegallery.R;
+import com.example.spacegallery.data.ImageData;
 import com.example.spacegallery.logic.GalleryPresenter;
+import com.example.spacegallery.util.Utils;
+import com.fivehundredpx.greedolayout.GreedoLayoutManager;
+import com.fivehundredpx.greedolayout.GreedoSpacingItemDecoration;
+
+import java.util.List;
 
 public class GalleryFragment extends Fragment {
 
@@ -20,6 +27,7 @@ public class GalleryFragment extends Fragment {
     private GalleryPresenter galleryPresenter;
 
     private RecyclerView imageGrid;
+    private GalleryAdapter galleryAdapter;
 
     /*
         Create new fragment instance
@@ -39,7 +47,6 @@ public class GalleryFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_gallery, container, false);
         initImageGridView(view);
-        parseJsonFile(JSON_FILE_NAME);
         return view;
     }
 
@@ -48,12 +55,31 @@ public class GalleryFragment extends Fragment {
      */
     private void initImageGridView(View view) {
         imageGrid = view.findViewById(R.id.image_grid);
+
+        galleryAdapter = new GalleryAdapter(getContext());
+        imageGrid.setAdapter(galleryAdapter);
+
+        final GreedoLayoutManager layoutManager = new GreedoLayoutManager(galleryAdapter);
+        layoutManager.setMaxRowHeight(Utils.dpToPx(150, getContext()));
+        imageGrid.setLayoutManager(layoutManager);
+
+        int spacing = Utils.dpToPx(4, getContext());
+        imageGrid.addItemDecoration(new GreedoSpacingItemDecoration(spacing));
+
+        parseJsonFile(JSON_FILE_NAME);
     }
 
+    /*
+        Parsing json file to list of ImageData objects
+     */
     private void parseJsonFile(String fileName) {
         galleryPresenter.parseJsonFile(fileName);
-
     }
 
-
+    /*
+        Callback from presenter when ImageData objects list is available to show in adapter
+     */
+    public void updateAdapterData(List<ImageData> imageDataList) {
+        galleryAdapter.updateImageDataList(imageDataList);
+    }
 }
