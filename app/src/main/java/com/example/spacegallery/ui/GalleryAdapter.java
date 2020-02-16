@@ -4,25 +4,31 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageView;
+import android.widget.ImageView.ScaleType;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.example.spacegallery.R;
 import com.example.spacegallery.data.ImageData;
 import com.example.spacegallery.ui.GalleryAdapter.ImageGridViewHolder;
 import com.fivehundredpx.greedolayout.GreedoLayoutSizeCalculator.SizeCalculatorDelegate;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class GalleryAdapter extends RecyclerView.Adapter<ImageGridViewHolder> implements SizeCalculatorDelegate {
-    public static final String IMAGE_DATA_KEY = "image_data";
+    public static final String IMAGE_DATA_LIST_KEY = "image_data_list";
+    public static final String IMAGE_POSITION_KEY = "image_position";
 
     private Context context;
     private List<ImageData> imageDataList;
@@ -56,16 +62,20 @@ public class GalleryAdapter extends RecyclerView.Adapter<ImageGridViewHolder> im
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ImageGridViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ImageGridViewHolder holder, final int position) {
         ImageView galleryImage = holder.getGalleryImage();
+        galleryImage.setBackgroundColor(Color.parseColor("#000000"));
 
+        if (galleryImage != null) {
+            Log.i("Aarathi", "galleryImage is null");
+        }
         final ImageData imageData = imageDataList.get(position);
         galleryImage.getLayoutParams().width = imageData.getWidth();
         galleryImage.getLayoutParams().height = imageData.getHeight();
         galleryImage.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                launchDetailView(imageData);
+                launchDetailView(position);
             }
         });
 
@@ -74,8 +84,9 @@ public class GalleryAdapter extends RecyclerView.Adapter<ImageGridViewHolder> im
 
         Glide.with(context)
                 .load(imageUrl)
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .into(galleryImage);
+        Log.i("Aarathi", "Glide loaded");
     }
 
     @Override
@@ -111,9 +122,10 @@ public class GalleryAdapter extends RecyclerView.Adapter<ImageGridViewHolder> im
     /*
         Show the image details
      */
-    private void launchDetailView(ImageData imageData) {
+    private void launchDetailView(int position) {
         Intent intent = new Intent(context, DetailActivity.class);
-        intent.putExtra(IMAGE_DATA_KEY, imageData);
+        intent.putExtra(IMAGE_DATA_LIST_KEY, (ArrayList<ImageData>) imageDataList);
+        intent.putExtra(IMAGE_POSITION_KEY, position);
         context.startActivity(intent);
     }
 

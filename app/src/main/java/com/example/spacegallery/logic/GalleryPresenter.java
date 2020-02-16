@@ -1,9 +1,12 @@
 package com.example.spacegallery.logic;
 
+import android.content.Context;
+
 import com.example.spacegallery.data.GalleryModel;
 import com.example.spacegallery.data.ImageData;
 import com.example.spacegallery.ui.GalleryFragment;
 
+import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
@@ -31,7 +34,17 @@ public class GalleryPresenter {
                 galleryFragment.get().updateAdapterData(imageDataList);
             }
         };
-        String jsonFormat = galleryModel.loadJsonData(fileName);
+
+        String jsonFormat;
+
+        Context applicationContext = getView().getContext();
+        File fileJson = new File(applicationContext.getExternalFilesDir("/com.example.spacegallery"), "parsed_data.json");
+
+        if (fileJson.exists()) {
+            jsonFormat = galleryModel.loadParsedJsonData(fileJson);
+        } else {
+            jsonFormat = galleryModel.loadJsonData(fileName);
+        }
         galleryModel.processJsonToJava(jsonFormat, callback);
     }
 }

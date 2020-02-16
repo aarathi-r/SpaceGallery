@@ -14,6 +14,10 @@ import com.example.spacegallery.R;
 
 public class GalleryActivity extends AppCompatActivity {
 
+    private static final int GRANTED = PackageManager.PERMISSION_GRANTED;
+    private static final String[] permissions = {permission.INTERNET,
+            permission.WRITE_EXTERNAL_STORAGE, permission.READ_EXTERNAL_STORAGE};
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,8 +27,10 @@ public class GalleryActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (checkSelfPermission(permission.INTERNET) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{permission.INTERNET}, 100);
+        if (checkSelfPermission(permission.INTERNET) != GRANTED ||
+                checkSelfPermission(permission.WRITE_EXTERNAL_STORAGE) != GRANTED ||
+                checkSelfPermission(permission.READ_EXTERNAL_STORAGE) != GRANTED) {
+            ActivityCompat.requestPermissions(this, permissions, 100);
         } else {
             Toast.makeText(this, "Internet permission already there", Toast.LENGTH_SHORT).show();
             initializeGalleryFragment();
@@ -33,7 +39,8 @@ public class GalleryActivity extends AppCompatActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == 100 && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+        if (requestCode == 100 && (grantResults[0] == GRANTED)
+                && grantResults[1] == GRANTED && grantResults[2] == GRANTED) {
             initializeGalleryFragment();
         } else{
             Toast.makeText(this, "No Internet", Toast.LENGTH_SHORT).show();

@@ -1,8 +1,16 @@
 package com.example.spacegallery.data;
 
+import android.net.Uri;
+import android.util.Log;
+
 import com.example.spacegallery.logic.GalleryPresenter;
 import com.example.spacegallery.logic.OnImageLoadedListener;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -32,11 +40,33 @@ public class GalleryModel {
         return jsonData;
     }
 
+    public String loadParsedJsonData(File jsonFile) {
+        Log.e("Aarathi","loadParsedJsonData");
+        String jsonData = null;
+        if (jsonFile != null) {
+            Log.e("Aarathi","jsonFile not null");
+        }
+        try {
+            FileInputStream fileIn = new FileInputStream(jsonFile);
+
+            int length = fileIn.available();
+            byte[] data = new byte[length];
+            fileIn.read(data);
+            fileIn.close();
+            jsonData = new String(data, StandardCharsets.UTF_8);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return jsonData;
+    }
+
     /*
         Convert json format to Java object
      */
     public void processJsonToJava(String jsonFormat, OnImageLoadedListener listener) {
-        GalleryLoader asyncTask = new GalleryLoader(listener);
+        GalleryLoader asyncTask = new GalleryLoader(listener, galleryPresenter);
         asyncTask.execute(jsonFormat);
     }
 }

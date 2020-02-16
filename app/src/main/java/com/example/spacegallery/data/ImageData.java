@@ -2,9 +2,9 @@ package com.example.spacegallery.data;
 
 import android.graphics.Bitmap;
 import android.os.Parcel;
-import android.os.Parcelable;
+import java.io.Serializable;
 
-public class ImageData implements Parcelable {
+public class ImageData implements Serializable {
     private String copyright;
     private String date;
     private String explanation;
@@ -17,49 +17,49 @@ public class ImageData implements Parcelable {
     private int height;
     private Bitmap image;
 
-    protected ImageData(Parcel in) {
-        copyright = in.readString();
-        date = in.readString();
-        explanation = in.readString();
-        hdurl = in.readString();
-        media_type = in.readString();
-        service_version = in.readString();
-        title = in.readString();
-        url = in.readString();
-        width = in.readInt();
-        height = in.readInt();
-    }
+//    protected ImageData(Parcel in) {
+//        copyright = in.readString();
+//        date = in.readString();
+//        explanation = in.readString();
+//        hdurl = in.readString();
+//        media_type = in.readString();
+//        service_version = in.readString();
+//        title = in.readString();
+//        url = in.readString();
+//        width = in.readInt();
+//        height = in.readInt();
+//    }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(copyright);
-        dest.writeString(date);
-        dest.writeString(explanation);
-        dest.writeString(hdurl);
-        dest.writeString(media_type);
-        dest.writeString(service_version);
-        dest.writeString(title);
-        dest.writeString(url);
-        dest.writeInt(width);
-        dest.writeInt(height);
-    }
+//    @Override
+//    public void writeToParcel(Parcel dest, int flags) {
+//        dest.writeString(copyright);
+//        dest.writeString(date);
+//        dest.writeString(explanation);
+//        dest.writeString(hdurl);
+//        dest.writeString(media_type);
+//        dest.writeString(service_version);
+//        dest.writeString(title);
+//        dest.writeString(url);
+//        dest.writeInt(width);
+//        dest.writeInt(height);
+//    }
+//
+//    @Override
+//    public int describeContents() {
+//        return 0;
+//    }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    public static final Creator<ImageData> CREATOR = new Creator<ImageData>() {
-        @Override
-        public ImageData createFromParcel(Parcel in) {
-            return new ImageData(in);
-        }
-
-        @Override
-        public ImageData[] newArray(int size) {
-            return new ImageData[size];
-        }
-    };
+//    public static final Creator<ImageData> CREATOR = new Creator<ImageData>() {
+//        @Override
+//        public ImageData createFromParcel(Parcel in) {
+//            return new ImageData(in);
+//        }
+//
+//        @Override
+//        public ImageData[] newArray(int size) {
+//            return new ImageData[size];
+//        }
+//    };
 
     public String getCopyright() {
         return copyright;
