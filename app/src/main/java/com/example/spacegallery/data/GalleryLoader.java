@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import com.example.spacegallery.logic.GalleryPresenter;
 import com.example.spacegallery.logic.OnImageLoadedListener;
@@ -35,9 +34,6 @@ public class GalleryLoader extends AsyncTask<String,Void, List<ImageData>> {
     @Override
     protected List<ImageData> doInBackground(String... jsonFormat) {
         String json = jsonFormat[0];
-        Log.i("Aarathi", "jsonFormat: " + json);
-        String parsedJson;
-
         List<ImageData> imageDataList = new ArrayList<>();
 
         /*
@@ -49,7 +45,6 @@ public class GalleryLoader extends AsyncTask<String,Void, List<ImageData>> {
             for (int i=0; i<jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 ImageData imageData = gson.fromJson(jsonObject.toString(), ImageData.class);
-                Log.i("Aarathi",(i+1) + " : " + imageData.getCopyright());
 
                 if (imageData.getWidth() == 0 || imageData.getHeight() == 0) {
                     URL url;
@@ -66,8 +61,6 @@ public class GalleryLoader extends AsyncTask<String,Void, List<ImageData>> {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-
-                    Log.i("Aarathi", "width: " + options.outWidth + " height: " + options.outHeight);
 
                     imageData.setWidth(options.outWidth);
                     imageData.setHeight(options.outHeight);
@@ -93,17 +86,18 @@ public class GalleryLoader extends AsyncTask<String,Void, List<ImageData>> {
         listener.onImageLoaded(imageDataList);
     }
 
+    @Override
+    protected void onCancelled() {
+        super.onCancelled();
+        listener.onImageLoaded(null);
+    }
+
     public void writeJsonFile(String parsedJson) {
-        Log.e("Aarathi","writeJsonFile " + parsedJson);
         Context applicationContext = presenter.getView().getActivity().getApplicationContext();
         File fileJson = new File(applicationContext.getExternalFilesDir("/com.example.spacegallery"), "parsed_data.json");
 
-        if (fileJson.exists()) {
-            return;
-        }
         BufferedWriter bufferedWriter = null;
         try {
-            Log.e("Aarathi","file not exist");
             fileJson.createNewFile();
 
             FileWriter fileWriter = new FileWriter(fileJson);

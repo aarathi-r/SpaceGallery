@@ -3,8 +3,31 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/image_grid"
+    <ImageView
+        android:id="@+id/loading"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:scaleType="fitCenter"
+        android:background="@color/violet"/>
+    <RelativeLayout
+        android:id="@+id/gallery"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <TextView
+            android:id="@+id/app_bar_title"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/app_bar_height"
+            android:textColor="@color/black"
+            android:background="@color/white"
+            android:text="@string/app_name"
+            android:textSize="@dimen/app_bar_text_size"
+            android:fontFamily="@font/app_bar_font"
+            android:gravity="center_vertical"
+            android:paddingStart="@dimen/app_bar_text_padding_left"/>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/image_grid"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/app_bar_title" />
+    </RelativeLayout>
 </RelativeLayout>

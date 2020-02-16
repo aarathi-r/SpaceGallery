@@ -4,11 +4,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black">
+
     <ImageView
         android:id="@+id/image_display"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:scaleType="fitCenter"/>
+
     <include layout="@layout/detail_section_layout" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

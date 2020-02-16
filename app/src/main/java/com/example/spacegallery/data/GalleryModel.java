@@ -1,16 +1,11 @@
 package com.example.spacegallery.data;
 
-import android.net.Uri;
-import android.util.Log;
-
 import com.example.spacegallery.logic.GalleryPresenter;
 import com.example.spacegallery.logic.OnImageLoadedListener;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -41,11 +36,7 @@ public class GalleryModel {
     }
 
     public String loadParsedJsonData(File jsonFile) {
-        Log.e("Aarathi","loadParsedJsonData");
         String jsonData = null;
-        if (jsonFile != null) {
-            Log.e("Aarathi","jsonFile not null");
-        }
         try {
             FileInputStream fileIn = new FileInputStream(jsonFile);
 

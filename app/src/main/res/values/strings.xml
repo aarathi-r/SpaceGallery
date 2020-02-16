@@ -1,3 +1,6 @@
 <resources>
-    <string name="app_name">SpaceGallery</string>
+    <string name="app_name">Space Gallery</string>
+    <string name="permission_toast">Internet and External Storage Read/Write permissions are required.</string>
+    <string name="no_connection_toast">No active network connection is available. Please connect to network and try. </string>
+    <string name="image_data_not_available">Image could not be loaded. Check your network connection.</string>
 </resources>

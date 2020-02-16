@@ -2,16 +2,12 @@ package com.example.spacegallery.ui;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageView;
-import android.widget.ImageView.ScaleType;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -42,6 +38,9 @@ public class GalleryAdapter extends RecyclerView.Adapter<ImageGridViewHolder> im
         Update the adapter data
      */
     public void updateImageDataList(List<ImageData> imageDataList) {
+        if (imageDataList == null) {
+            Toast.makeText(context, R.string.image_data_not_available, Toast.LENGTH_LONG).show();
+        }
         this.imageDataList = imageDataList;
         mImageAspectRatios = new double[imageDataList.size()];
         calculateImageAspectRatios();
@@ -64,11 +63,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<ImageGridViewHolder> im
     @Override
     public void onBindViewHolder(@NonNull ImageGridViewHolder holder, final int position) {
         ImageView galleryImage = holder.getGalleryImage();
-        galleryImage.setBackgroundColor(Color.parseColor("#000000"));
 
-        if (galleryImage != null) {
-            Log.i("Aarathi", "galleryImage is null");
-        }
         final ImageData imageData = imageDataList.get(position);
         galleryImage.getLayoutParams().width = imageData.getWidth();
         galleryImage.getLayoutParams().height = imageData.getHeight();
@@ -80,13 +75,11 @@ public class GalleryAdapter extends RecyclerView.Adapter<ImageGridViewHolder> im
         });
 
         String imageUrl = imageData.getUrl();
-        Log.i("Aarathi", "imageData.imageUrl: " + imageUrl);
 
         Glide.with(context)
                 .load(imageUrl)
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .into(galleryImage);
-        Log.i("Aarathi", "Glide loaded");
     }
 
     @Override

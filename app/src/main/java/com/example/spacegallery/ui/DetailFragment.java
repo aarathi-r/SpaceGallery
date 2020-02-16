@@ -1,16 +1,20 @@
 package com.example.spacegallery.ui;
 
 import android.os.Bundle;
-import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
+import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
@@ -40,17 +44,32 @@ public class DetailFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Log.i("Aarathi", "DetailFragment onCreateView");
-        View view = inflater.inflate(R.layout.fragment_detail, container, false);
+        final View mainView = inflater.inflate(R.layout.fragment_detail, container, false);
 
         ImageData imageData = imageDataList.get(position);
-        ImageView imageView = view.findViewById(R.id.image_display);
-        LinearLayout detailView = view.findViewById(R.id.image_detail_view);
+
+        final ImageView imageView = mainView.findViewById(R.id.image_display);
+        final int imageTop = imageView.getTop();
+
+        RelativeLayout detailView = mainView.findViewById(R.id.image_detail_view);
         final BottomSheetBehavior sheetBehavior = BottomSheetBehavior.from(detailView);
-
-        Button slideUp = view.findViewById(R.id.slide_up);
-
         sheetBehavior.setPeekHeight((int) getContext().getResources().getDimension(R.dimen.collapsed_height));
+
+        sheetBehavior.setBottomSheetCallback(new BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View view, int i) {
+                if(sheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
+                    slideImageToTop(imageView, mainView, imageTop);
+                } else if(sheetBehavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
+                    slideImageToCentre(imageView, mainView, imageTop);
+                }
+            }
+
+            @Override
+            public void onSlide(@NonNull View view, float v) { }
+        });
+
+        ImageView slideUp = mainView.findViewById(R.id.slide_up);
         slideUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -62,22 +81,82 @@ public class DetailFragment extends Fragment {
             }
         });
 
-        sheetBehavior.setBottomSheetCallback(new BottomSheetCallback() {
-            @Override
-            public void onStateChanged(@NonNull View view, int i) {
-                Log.i("Aarathi","onStateChanged");
-            }
+        TextView title = mainView.findViewById(R.id.image_title);
+        String imageTitle = imageData.getTitle();
+        if (imageTitle != null) {
+            title.setVisibility(View.VISIBLE);
+            title.setText(imageTitle);
+        }
 
-            @Override
-            public void onSlide(@NonNull View view, float v) {
-                Log.i("Aarathi","onSlide");
-            }
-        });
+        TextView copyright = mainView.findViewById(R.id.image_copyright);
+        String imageCopyright = imageData.getCopyright();
+        if (imageCopyright != null) {
+            copyright.setVisibility(View.VISIBLE);
+            copyright.setText(imageCopyright);
+        }
+
+        TextView date = mainView.findViewById(R.id.image_date);
+        String imageDate = imageData.getDate();
+        if (imageDate != null) {
+            date.setVisibility(View.VISIBLE);
+            date.setText(imageDate);
+        }
+
+        TextView explanation = mainView.findViewById(R.id.image_explanation);
+        String imageExplanation = imageData.getExplanation();
+        if (imageExplanation != null) {
+            explanation.setVisibility(View.VISIBLE);
+            explanation.setText(imageExplanation);
+        }
 
         Glide.with(getContext())
                 .load(imageData.getUrl())
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(imageView);
-        return view;
+        return mainView;
+    }
+
+    private void slideImageToTop(View view, View parent, int startPosition) {
+        final ImageView image = (ImageView) view;
+        Animation animation = new TranslateAnimation(0, 0, startPosition, parent.getTop());
+        animation.setDuration(100);
+        image.startAnimation(animation);
+
+        animation.setAnimationListener(new AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) { }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) { }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                CoordinatorLayout.LayoutParams lp = (CoordinatorLayout.LayoutParams) image.getLayoutParams();
+                lp.gravity = Gravity.TOP;
+                image.setLayoutParams(lp);
+            }
+        });
+    }
+
+    private void slideImageToCentre(View view, View parent, int endPosition) {
+        final ImageView image = (ImageView) view;
+        Animation animation = new TranslateAnimation(0, 0, parent.getTop(), endPosition);
+        animation.setDuration(1);
+        image.startAnimation(animation);
+
+        animation.setAnimationListener(new AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) { }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) { }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                CoordinatorLayout.LayoutParams lp = (CoordinatorLayout.LayoutParams) image.getLayoutParams();
+                lp.gravity = Gravity.CENTER;
+                image.setLayoutParams(lp);
+            }
+        });
     }
 }

@@ -4,12 +4,14 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.spacegallery.R;
 import com.example.spacegallery.data.ImageData;
 import com.example.spacegallery.logic.GalleryPresenter;
@@ -25,6 +27,7 @@ public class GalleryFragment extends Fragment {
 
     private GalleryPresenter galleryPresenter;
 
+    private ImageView loadingGif;
     private RecyclerView imageGrid;
     private GalleryAdapter galleryAdapter;
 
@@ -45,6 +48,7 @@ public class GalleryFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_gallery, container, false);
+        showLoadingGif(view);
         initImageGridView(view);
         return view;
     }
@@ -62,7 +66,7 @@ public class GalleryFragment extends Fragment {
         layoutManager.setMaxRowHeight(Utils.dpToPx(150, getContext()));
         imageGrid.setLayoutManager(layoutManager);
 
-        int spacing = Utils.dpToPx(4, getContext());
+        int spacing = Utils.dpToPx(2, getContext());
         imageGrid.addItemDecoration(new GreedoSpacingItemDecoration(spacing));
 
         parseJsonFile(JSON_FILE_NAME);
@@ -80,5 +84,23 @@ public class GalleryFragment extends Fragment {
      */
     public void updateAdapterData(List<ImageData> imageDataList) {
         galleryAdapter.updateImageDataList(imageDataList);
+        if (!((GalleryActivity) getActivity()).isNetworkConnected()) {
+            ((GalleryActivity) getActivity()).showNoConnectionToast();
+        }
+        if (getGifView() != null) {
+            getGifView().setVisibility(View.GONE);
+        }
+    }
+
+    private void showLoadingGif(View view) {
+        loadingGif = view.findViewById(R.id.loading);
+        Glide.with(getContext())
+                .load(R.drawable.loading_indicator)
+                .into(loadingGif);
+
+    }
+
+    public ImageView getGifView() {
+        return loadingGif;
     }
 }
